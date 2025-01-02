@@ -57,4 +57,6 @@ abstract class AVFoundationVideoPlayerApi {
   void pause(int textureId);
   @ObjCSelector('setMixWithOthers:')
   void setMixWithOthers(bool mixWithOthers);
+  @ObjCSelector('changeBandWidth:forPlayer:')
+  void changeBandWidth(double volume, int textureId);
 }
