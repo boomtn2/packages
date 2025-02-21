@@ -15,35 +15,41 @@ import 'package:pigeon/pigeon.dart';
 ))
 class TextureMessage {
   TextureMessage(this.textureId);
+
   int textureId;
 }
 
 class LoopingMessage {
   LoopingMessage(this.textureId, this.isLooping);
+
   int textureId;
   bool isLooping;
 }
 
 class VolumeMessage {
   VolumeMessage(this.textureId, this.volume);
+
   int textureId;
   double volume;
 }
 
 class PlaybackSpeedMessage {
   PlaybackSpeedMessage(this.textureId, this.speed);
+
   int textureId;
   double speed;
 }
 
 class PositionMessage {
   PositionMessage(this.textureId, this.position);
+
   int textureId;
   int position;
 }
 
 class CreateMessage {
   CreateMessage({required this.httpHeaders});
+
   String? asset;
   String? uri;
   String? packageName;
@@ -53,20 +59,45 @@ class CreateMessage {
 
 class MixWithOthersMessage {
   MixWithOthersMessage(this.mixWithOthers);
+
   bool mixWithOthers;
+}
+
+class VideoResolution {
+
+  VideoResolution(
+      {required this.width, required this.height, required this.bitRate});
+  final int width;
+  final int height;
+  final int bitRate;
 }
 
 @HostApi(dartHostTestHandler: 'TestHostVideoPlayerApi')
 abstract class AndroidVideoPlayerApi {
   void initialize();
+
   TextureMessage create(CreateMessage msg);
+
   void dispose(TextureMessage msg);
+
   void setLooping(LoopingMessage msg);
+
   void setVolume(VolumeMessage msg);
+
   void setPlaybackSpeed(PlaybackSpeedMessage msg);
+
   void play(TextureMessage msg);
+
   PositionMessage position(TextureMessage msg);
+
   void seekTo(PositionMessage msg);
+
   void pause(TextureMessage msg);
+
   void setMixWithOthers(MixWithOthersMessage msg);
+
+  void changeBandWidth(VolumeMessage msg);
+
+  List<VideoResolution> getVideoResolution(TextureMessage msg);
+
 }

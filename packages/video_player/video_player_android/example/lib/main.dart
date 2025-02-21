@@ -41,7 +41,8 @@ class _App extends StatelessWidget {
             _ButterFlyAssetVideo(),
           ],
         ),
-      ),
+       ),
+
     );
   }
 }
@@ -94,6 +95,9 @@ class _ButterFlyAssetVideoState extends State<_ButterFlyAssetVideo> {
               ),
             ),
           ),
+          ElevatedButton(onPressed: (){
+            _controller.getVideoSolution();
+          }, child: Text('Solution'))
         ],
       ),
     );
@@ -148,6 +152,9 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
               ),
             ),
           ),
+          ElevatedButton(onPressed: (){
+            _controller.getVideoSolution();
+          }, child: Text('Solution'))
         ],
       ),
     );
@@ -232,6 +239,9 @@ class _RtspRemoteVideoState extends State<_RtspRemoteVideo> {
                 ),
               ),
             ),
+          ElevatedButton(onPressed: (){
+            _controller?.getVideoSolution();
+          }, child: Text('Solution'))
         ],
       ),
     );
