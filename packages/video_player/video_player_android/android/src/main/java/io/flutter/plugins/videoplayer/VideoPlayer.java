@@ -119,24 +119,28 @@ final class VideoPlayer {
         Tracks currentTracks = exoPlayer.getCurrentTracks();
         List<Map<String, Object>> videoResolutions = new ArrayList<>();
 
-        for (Tracks.Group group : currentTracks.getGroups()) {
-            for (int i = 0; i < group.length; i++) {
-                Format format = group.getTrackFormat(i);
-                if (MimeTypes.isVideo(format.sampleMimeType)) {
-                    int width = format.width;
-                    int height = format.height;
-                    int bitrate = format.bitrate;
-                    Map<String, Object> resolutionMap = new HashMap<>();
-                    resolutionMap.put("width", width);
-                    resolutionMap.put("height", height);
-                    resolutionMap.put("bitrate", bitrate);
+        if (currentTracks != null) {
+            for (Tracks.Group group : currentTracks.getGroups()) {
+                for (int i = 0; i < group.length; i++) {
+                    Format format = group.getTrackFormat(i);
+                    if (MimeTypes.isVideo(format.sampleMimeType)) {
+                        int width = (format.width != Format.NO_VALUE) ? format.width : 0;
+                        int height = (format.height != Format.NO_VALUE) ? format.height : 0;
+                        int bitrate = (format.bitrate != Format.NO_VALUE) ? format.bitrate : 0;
 
-                    // Thêm vào danh sách
-                    videoResolutions.add(resolutionMap);
-                    Log.d("VideoResolution", "Độ phân giải video: " + width + "x" + height + "bitrate" + bitrate);
+                        Map<String, Object> resolutionMap = new HashMap<>();
+                        resolutionMap.put("width", width);
+                        resolutionMap.put("height", height);
+                        resolutionMap.put("bitrate", bitrate);
+
+                        videoResolutions.add(resolutionMap);
+
+                        Log.d("VideoResolution", "Độ phân giải video: " + width + "x" + height + ", bitrate: " + bitrate + "bps" + "TrackSelected: "+group.isTrackSelected(i));
+                    }
                 }
             }
         }
+
 
         return videoResolutions;
     }
