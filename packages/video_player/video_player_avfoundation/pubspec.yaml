@@ -24,11 +24,11 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  video_player_platform_interface: 
+  video_player_platform_interface:
     git:
-      url: https://github.com/beheobong/packages.git
+      url: https://github.com/boomtn2/packages.git
       path: packages/video_player/video_player_platform_interface/
-      ref: 1cdfec2528440a5260d5bc62b61c96c19867bd96
+      ref: 8d59f9d7364d85c35474cde812afdd0e94efc7ee
 
 dev_dependencies:
   flutter_test:
