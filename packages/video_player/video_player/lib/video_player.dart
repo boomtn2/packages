@@ -629,7 +629,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     if (_isDisposedOrNotInitialized) {
       return [];
     }
-    final list = await _platform.getVideoResolution(textureId);
+    final list = await _videoPlayerPlatform.getVideoResolution(textureId);
     return list;
   }
 
