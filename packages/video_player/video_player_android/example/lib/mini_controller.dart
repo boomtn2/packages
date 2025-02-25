@@ -309,11 +309,13 @@ class MiniController extends ValueNotifier<VideoPlayerValue> {
     await _applyPlayPause();
   }
 
-  Future<void> getVideoSolution()async{
+  Future<List<VideoResolutionModel>> getVideoSolution() async {
     final list = await _platform.getVideoResolution(textureId);
-    for (var element in list) {
-      print('${element.bitRate} ${element.width} ${element.height}');
-    }
+    return list;
+  }
+
+  Future changeBand(double bitRate) async {
+    await _platform.changeBandWidth(textureId, bitRate);
   }
 
   Future<void> _applyPlayPause() async {

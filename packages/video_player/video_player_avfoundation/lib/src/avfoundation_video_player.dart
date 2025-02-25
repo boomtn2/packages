@@ -83,7 +83,7 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
 
   @override
   Future<void> changeBandWidth(int textureId, double bandwidth) {
-    return _api.changeBandWidth(bandwidth, textureId);
+    return _api.changeBandWidth(textureId, bandwidth);
   }
 
   @override

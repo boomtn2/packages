@@ -19,6 +19,7 @@ import 'package:pigeon/pigeon.dart';
 ))
 class CreationOptions {
   CreationOptions({required this.httpHeaders});
+
   String? asset;
   String? uri;
   String? packageName;
@@ -28,33 +29,60 @@ class CreationOptions {
 
 class MixWithOthersMessage {
   MixWithOthersMessage(this.mixWithOthers);
+
   bool mixWithOthers;
+}
+
+class VideoResolution {
+  VideoResolution(
+      {required this.width, required this.height, required this.bitRate});
+
+  final int width;
+  final int height;
+  final int bitRate;
 }
 
 @HostApi(dartHostTestHandler: 'TestHostVideoPlayerApi')
 abstract class AVFoundationVideoPlayerApi {
   @ObjCSelector('initialize')
   void initialize();
+
   @ObjCSelector('createWithOptions:')
   // Creates a new player and returns its ID.
   int create(CreationOptions creationOptions);
+
   @ObjCSelector('disposePlayer:')
   void dispose(int textureId);
+
   @ObjCSelector('setLooping:forPlayer:')
   void setLooping(bool isLooping, int textureId);
+
   @ObjCSelector('setVolume:forPlayer:')
   void setVolume(double volume, int textureId);
+
   @ObjCSelector('setPlaybackSpeed:forPlayer:')
   void setPlaybackSpeed(double speed, int textureId);
+
   @ObjCSelector('playPlayer:')
   void play(int textureId);
+
   @ObjCSelector('positionForPlayer:')
   int getPosition(int textureId);
+
   @async
   @ObjCSelector('seekTo:forPlayer:')
   void seekTo(int position, int textureId);
+
   @ObjCSelector('pausePlayer:')
   void pause(int textureId);
+
   @ObjCSelector('setMixWithOthers:')
   void setMixWithOthers(bool mixWithOthers);
+
+
+  @ObjCSelector('forPlayer:bandwidth:')
+  void changeBandWidth(int textureId,double mixWithOthers);
+
+  @ObjCSelector('forPlayer:')
+  List<VideoResolution> getVideoResolution( int textureId);
 }

@@ -5,6 +5,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
+import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
 import 'mini_controller.dart';
 
@@ -41,8 +42,7 @@ class _App extends StatelessWidget {
             _ButterFlyAssetVideo(),
           ],
         ),
-       ),
-
+      ),
     );
   }
 }
@@ -65,6 +65,8 @@ class _ButterFlyAssetVideoState extends State<_ButterFlyAssetVideo> {
     });
     _controller.initialize().then((_) => _controller.play());
   }
+
+  final List<VideoResolutionModel> listResolution = [];
 
   @override
   void dispose() {
@@ -95,9 +97,17 @@ class _ButterFlyAssetVideoState extends State<_ButterFlyAssetVideo> {
               ),
             ),
           ),
-          ElevatedButton(onPressed: (){
-            _controller.getVideoSolution();
-          }, child: Text('Solution'))
+          ElevatedButton(
+              onPressed: () async {
+                final list = await _controller.getVideoSolution();
+                print('Lenght List Resolution ${list.length}');
+                setState(() {
+                  listResolution.addAll(list);
+                });
+              },
+              child: Text('Solution')),
+          for (var item in listResolution)
+            ElevatedButton(onPressed: () {}, child: Text('${item.bitRate}')),
         ],
       ),
     );
@@ -111,12 +121,13 @@ class _BumbleBeeRemoteVideo extends StatefulWidget {
 
 class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
   late MiniController _controller;
+  final List<VideoResolutionModel> listResolution = [];
 
   @override
   void initState() {
     super.initState();
     _controller = MiniController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+      'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
     );
 
     _controller.addListener(() {
@@ -152,9 +163,21 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
               ),
             ),
           ),
-          ElevatedButton(onPressed: (){
-            _controller.getVideoSolution();
-          }, child: Text('Solution'))
+          ElevatedButton(
+              onPressed: () async {
+                final list = await _controller.getVideoSolution();
+                print('Lenght List Resolution ${list.length}');
+                setState(() {
+                  listResolution.addAll(list);
+                });
+              },
+              child: Text('Solution')),
+          for (var item in listResolution)
+            ElevatedButton(
+                onPressed: () {
+                  _controller.changeBand(item.bitRate.toDouble());
+                },
+                child: Text('${item.height}')),
         ],
       ),
     );
@@ -239,9 +262,11 @@ class _RtspRemoteVideoState extends State<_RtspRemoteVideo> {
                 ),
               ),
             ),
-          ElevatedButton(onPressed: (){
-            _controller?.getVideoSolution();
-          }, child: Text('Solution'))
+          ElevatedButton(
+              onPressed: () {
+                _controller?.getVideoSolution();
+              },
+              child: Text('Solution'))
         ],
       ),
     );
