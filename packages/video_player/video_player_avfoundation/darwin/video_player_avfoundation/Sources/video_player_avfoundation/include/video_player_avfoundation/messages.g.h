@@ -14,6 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class FVPCreationOptions;
+@class FVPVideoResolution;
 
 @interface FVPCreationOptions : NSObject
 /// `init` unavailable to enforce nonnull fields, see the `make` class method.
@@ -28,6 +29,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) NSString * packageName;
 @property(nonatomic, copy, nullable) NSString * formatHint;
 @property(nonatomic, copy) NSDictionary<NSString *, NSString *> * httpHeaders;
+@end
+
+@interface FVPVideoResolution : NSObject
+/// `init` unavailable to enforce nonnull fields, see the `make` class method.
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)makeWithWidth:(NSInteger )width
+    height:(NSInteger )height
+    bitRate:(NSInteger )bitRate;
+@property(nonatomic, assign) NSInteger  width;
+@property(nonatomic, assign) NSInteger  height;
+@property(nonatomic, assign) NSInteger  bitRate;
 @end
 
 /// The codec used by FVPAVFoundationVideoPlayerApi.
@@ -48,6 +60,8 @@ NSObject<FlutterMessageCodec> *FVPAVFoundationVideoPlayerApiGetCodec(void);
 - (void)pausePlayer:(NSInteger)textureId error:(FlutterError *_Nullable *_Nonnull)error;
 - (void)setMixWithOthers:(BOOL)mixWithOthers error:(FlutterError *_Nullable *_Nonnull)error;
 - (void)changeBandWidth:(double)volume forPlayer:(NSInteger)textureId error:(FlutterError *_Nullable *_Nonnull)error;
+/// @return `nil` only when `error != nil`.
+- (nullable NSArray<FVPVideoResolution *> *)forPlayer:(NSInteger)textureId error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
 extern void SetUpFVPAVFoundationVideoPlayerApi(id<FlutterBinaryMessenger> binaryMessenger, NSObject<FVPAVFoundationVideoPlayerApi> *_Nullable api);

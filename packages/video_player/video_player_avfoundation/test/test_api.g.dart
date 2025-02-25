@@ -20,6 +20,9 @@ class _TestHostVideoPlayerApiCodec extends StandardMessageCodec {
     if (value is CreationOptions) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
+    } else if (value is VideoResolution) {
+      buffer.putUint8(129);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -30,6 +33,8 @@ class _TestHostVideoPlayerApiCodec extends StandardMessageCodec {
     switch (type) {
       case 128: 
         return CreationOptions.decode(readValue(buffer)!);
+      case 129: 
+        return VideoResolution.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -63,6 +68,8 @@ abstract class TestHostVideoPlayerApi {
   void setMixWithOthers(bool mixWithOthers);
 
   void changeBandWidth(double volume, int textureId);
+
+  List<VideoResolution?> getVideoResolution(int textureId);
 
   static void setUp(TestHostVideoPlayerApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = '',}) {
     messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
@@ -367,6 +374,31 @@ abstract class TestHostVideoPlayerApi {
           try {
             api.changeBandWidth(arg_volume!, arg_textureId!);
             return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.video_player_avfoundation.AVFoundationVideoPlayerApi.getVideoResolution$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(__pigeon_channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(__pigeon_channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.video_player_avfoundation.AVFoundationVideoPlayerApi.getVideoResolution was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_textureId = (args[0] as int?);
+          assert(arg_textureId != null,
+              'Argument for dev.flutter.pigeon.video_player_avfoundation.AVFoundationVideoPlayerApi.getVideoResolution was null, expected non-null int.');
+          try {
+            final List<VideoResolution?> output = api.getVideoResolution(arg_textureId!);
+            return <Object?>[output];
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
           }          catch (e) {

@@ -534,6 +534,18 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
 - (void)changeBandWidth:(double)bandwidth {
     AVPlayerItem *currentItem = _player.currentItem;
     currentItem.preferredPeakBitRate = (int)bandwidth;
+    [self getVideoResolution]
+}
+
+- (void)getVideoResolution {
+    AVPlayerItem *currentItem = _player.currentItem;
+    CGSize size = currentItem.presentationSize;
+    CGFloat width = size.width;
+    CGFloat height = size.height;
+    CGFloat bitrate = track.estimatedDataRate; // Bitrate tính bằng bps
+
+
+    NSLog(@"Track - Bitrate: %.2f kbps, Width: %.0f, Height: %.0f", bitrate / 1000.0, width, height);
 }
 
 - (void)setPlaybackSpeed:(double)speed {
