@@ -534,7 +534,7 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
 - (void)changeBandWidth:(double)bandwidth {
     AVPlayerItem *currentItem = _player.currentItem;
     currentItem.preferredPeakBitRate = (int)bandwidth;
-    [self getVideoResolution]
+    [self getVideoResolution];
 }
 
 - (NSDictionary *)getVideoResolution {
