@@ -537,16 +537,32 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
     [self getVideoResolution]
 }
 
-- (void)getVideoResolution {
+- (NSDictionary *)getVideoResolution {
     AVPlayerItem *currentItem = _player.currentItem;
-    CGSize size = currentItem.presentationSize;
+    if (!currentItem) {
+        return @{@"error": @"No video loaded"};
+    }
+
+    AVAsset *asset = currentItem.asset;
+    NSArray<AVAssetTrack *> *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+
+    if (videoTracks.count == 0) {
+        return @{@"error": @"No video track found"};
+    }
+
+    AVAssetTrack *track = videoTracks.firstObject; // Lấy track đầu tiên
+    CGSize size = track.naturalSize;
     CGFloat width = size.width;
     CGFloat height = size.height;
     CGFloat bitrate = track.estimatedDataRate; // Bitrate tính bằng bps
 
-
-    NSLog(@"Track - Bitrate: %.2f kbps, Width: %.0f, Height: %.0f", bitrate / 1000.0, width, height);
+    return @{
+            @"width": @(width),
+            @"height": @(height),
+            @"bitrate": @(bitrate / 1000.0) // Chuyển sang kbps
+    };
 }
+
 
 - (void)setPlaybackSpeed:(double)speed {
   // See https://developer.apple.com/library/archive/qa/qa1772/_index.html for an explanation of
