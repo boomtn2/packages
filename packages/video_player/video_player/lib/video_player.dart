@@ -6,6 +6,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:export_tracks_video_stream/export_tracks_video_stream.dart';
+import 'package:export_tracks_video_stream/hls/model/video_track_resolution.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -695,12 +697,31 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     await _applyBandWidth();
   }
 
-
   Future<List<VideoResolutionModel>> get videoResolution async {
     if (_isDisposed) {
       return [];
     }
-    return _getVideoSolution();
+    if (formatHint == VideoFormat.hls || formatHint == VideoFormat.dash) {
+      return _getVideoResolutionHls();
+    } else {
+      return _getVideoSolution();
+    }
+  }
+
+  HlsController? controlerHls;
+
+  Future<List<VideoResolutionModel>> _getVideoResolutionHls() async {
+    controlerHls ??= HlsController();
+    final List<VideoResolutionModel> resolutions = <VideoResolutionModel>[];
+    final List<VideoTrackResolution>? tracks = await controlerHls?.getTracks(dataSource);
+    tracks?.forEach((VideoTrackResolution element) {
+      resolutions.add(VideoResolutionModel(
+          width: element.width ?? 0,
+          height: element.height ?? 0,
+          bitRate: element.bitRate ?? 0));
+    });
+
+    return resolutions;
   }
 
   /// Sets the playback speed of [this].
