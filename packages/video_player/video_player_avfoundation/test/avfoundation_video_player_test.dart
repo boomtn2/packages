@@ -90,6 +90,17 @@ class _ApiLogger implements TestHostVideoPlayerApi {
     playbackSpeed = speed;
     this.textureId = textureId;
   }
+
+  @override
+  List<VideoResolution?> getVideoResolution(int textureId) {
+    // TODO: implement getVideoResolution
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> changeBandWidth(double bandwidth, int textureId) async {
+    // TODO: implement changeBandWidth
+  }
 }
 
 void main() {

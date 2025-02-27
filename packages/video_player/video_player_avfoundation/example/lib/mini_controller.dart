@@ -361,6 +361,15 @@ class MiniController extends ValueNotifier<VideoPlayerValue> {
     await _applyPlaybackSpeed();
   }
 
+  Future<List<VideoResolutionModel>> getVideoResolutions()async{
+    final response =  await _platform.getVideoResolution(textureId);
+    return response;
+  }
+
+  Future<void> setBandWidth(int bitrate)async{
+    await _platform.changeBandWidth(textureId, bitrate.toDouble());
+  }
+
   void _updatePosition(Duration position) {
     value = value.copyWith(position: position);
   }

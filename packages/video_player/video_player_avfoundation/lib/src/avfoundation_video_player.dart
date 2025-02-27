@@ -82,8 +82,19 @@ class AVFoundationVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
-  Future<void> changeBandWidth(int textureId, double bandwidth) {
+  Future<void> changeBandWidth(int textureId, double bandwidth) async{
     return _api.changeBandWidth(bandwidth, textureId);
+  }
+
+  @override
+  Future<List<VideoResolutionModel>> getVideoResolution(int textureId) async{
+    final resolution = await _api.getVideoResolution(textureId);
+    final List<VideoResolutionModel> listResolutionModel = [];
+    for (var element in resolution) {
+      listResolutionModel.add(VideoResolutionModel(width: element?.width??0, height: element?.height??0, bitRate: element?.bitRate??0));
+    }
+
+    return listResolutionModel;
   }
 
   @override

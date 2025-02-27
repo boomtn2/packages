@@ -31,6 +31,15 @@ class MixWithOthersMessage {
   bool mixWithOthers;
 }
 
+class VideoResolution{
+  VideoResolution({required this.width, required this.height, required this.bitRate});
+
+  final int width;
+  final int height;
+  final int bitRate;
+
+}
+
 @HostApi(dartHostTestHandler: 'TestHostVideoPlayerApi')
 abstract class AVFoundationVideoPlayerApi {
   @ObjCSelector('initialize')
@@ -57,4 +66,8 @@ abstract class AVFoundationVideoPlayerApi {
   void pause(int textureId);
   @ObjCSelector('setMixWithOthers:')
   void setMixWithOthers(bool mixWithOthers);
+  @ObjCSelector('getVideoResolution:')
+  List<VideoResolution> getVideoResolution(int textureId);
+  @ObjCSelector('changeBandWidth:forPlayer:')
+  void changeBandWidth(double bandwidth, int textureId);
 }

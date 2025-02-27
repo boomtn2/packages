@@ -531,10 +531,44 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
   _player.volume = (float)((volume < 0.0) ? 0.0 : ((volume > 1.0) ? 1.0 : volume));
 }
 
+
+
 - (void)changeBandWidth:(double)bandwidth {
     AVPlayerItem *currentItem = _player.currentItem;
     currentItem.preferredPeakBitRate = (int)bandwidth;
 }
+
+- (NSArray<FVPVideoResolution *> *)getVideoResolution {
+    NSMutableArray<FVPVideoResolution *> *resolutions = [[NSMutableArray alloc] init];
+    AVPlayerItem *currentItem = _player.currentItem;
+    if (!currentItem) {
+        return @[]; // Trả về mảng rỗng nếu không có video nào
+    }
+
+    AVAsset *asset = currentItem.asset;
+    NSArray<AVAssetTrack *> *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+
+    if (videoTracks.count == 0) {
+        return @[]; // Trả về mảng rỗng nếu không có track video nào
+    }
+
+    for (AVAssetTrack *track in videoTracks) {
+        CGSize size = track.naturalSize;
+        CGFloat width = size.width;
+        CGFloat height = size.height;
+        CGFloat bitrate = track.estimatedDataRate; // Bitrate tính bằng bps
+
+        // Tạo object FVPVideoResolution và thêm vào danh sách
+        FVPVideoResolution *resolution = [FVPVideoResolution makeWithWidth:(NSInteger)width
+                                                                    height:(NSInteger)height
+                                                                   bitRate:(NSInteger)(bitrate / 1000.0)]; // Chuyển sang kbps
+        [resolutions addObject:resolution];
+    }
+
+    return resolutions;
+}
+
+
 
 - (void)setPlaybackSpeed:(double)speed {
   // See https://developer.apple.com/library/archive/qa/qa1772/_index.html for an explanation of
@@ -799,10 +833,28 @@ NS_INLINE CGFloat radiansToDegrees(CGFloat radians) {
   [player setVolume:volume];
 }
 
-- (void)changeBandWidth:(double)bandwidth forPlayer:(NSInteger)textureId error:(FlutterError **)error {
-  FVPVideoPlayer *player = self.playersByTextureId[@(textureId)];
-  [player changeBandWidth:bandwidth];
+
+- (void)changeBandWidth:(NSInteger)bandwidth forPlayer:(NSInteger)textureId error:(FlutterError *_Nullable *_Nonnull)error{
+    FVPVideoPlayer *player = self.playersByTextureId[@(textureId)];
+    [player changeBandWidth:bandwidth];
 }
+
+
+- (NSArray<FVPVideoResolution *> *)getVideoResolution:(NSInteger)textureId
+        error:(FlutterError *_Nullable *_Nonnull)error {
+    FVPVideoPlayer *player = self.playersByTextureId[@(textureId)];
+
+    if (!player) {
+        *error = [FlutterError errorWithCode:@"PLAYER_NOT_FOUND"
+                                     message:@"Không tìm thấy player với textureId đã cho"
+                                     details:nil];
+        return nil;
+    }
+
+    return [player getVideoResolution];
+}
+
+
 
 - (void)setPlaybackSpeed:(double)speed forPlayer:(NSInteger)textureId error:(FlutterError **)error {
   FVPVideoPlayer *player = self.playersByTextureId[@(textureId)];

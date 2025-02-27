@@ -5,6 +5,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
+import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
 import 'mini_controller.dart';
 
@@ -128,6 +129,16 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
     _controller.initialize();
   }
 
+  List<VideoResolutionModel> resolutions = [];
+
+  void getResolution()async{
+  final res = await  _controller.getVideoResolutions();
+  res.forEach((item){print('bitrate ${item.bitRate}');});
+  setState(() {
+    resolutions.addAll(res);
+  });
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -155,6 +166,14 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
               ),
             ),
           ),
+          ElevatedButton(onPressed: (){
+            getResolution();
+          }, child: Text('Get resolution')),
+Column(
+  children: resolutions.map((item)=>
+    ElevatedButton(onPressed: (){
+    _controller.setBandWidth(item.bitRate);      }, child: Text('${item.height}')),).toList()
+)
         ],
       ),
     );

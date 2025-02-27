@@ -16,8 +16,11 @@ dependencies:
     # The example app is bundled with the plugin so we use a path dependency on
     # the parent directory to use the current plugin's version.
     path: ../
-  video_player_platform_interface: 
-    path: ../../video_player_platform_interface/
+  video_player_platform_interface:
+    git:
+      url: https://github.com/boomtn2/packages.git
+      path: packages/video_player/video_player_platform_interface/
+      ref: afb202e224d26ecd9228046e23e64bcc4e7e734e
 
 dev_dependencies:
   flutter_test:
