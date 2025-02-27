@@ -309,6 +309,15 @@ class MiniController extends ValueNotifier<VideoPlayerValue> {
     await _applyPlayPause();
   }
 
+  Future<List<VideoResolutionModel>> getVideoSolution() async {
+    final list = await _platform.getVideoResolution(textureId);
+    return list;
+  }
+
+  Future changeBand(double bitRate) async {
+    await _platform.changeBandWidth(textureId, bitRate);
+  }
+
   Future<void> _applyPlayPause() async {
     _timer?.cancel();
     if (value.isPlaying) {

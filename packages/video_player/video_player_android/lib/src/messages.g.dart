@@ -198,6 +198,37 @@ class MixWithOthersMessage {
   }
 }
 
+class VideoResolution {
+  VideoResolution({
+    required this.width,
+    required this.height,
+    required this.bitRate,
+  });
+
+  int width;
+
+  int height;
+
+  int bitRate;
+
+  Object encode() {
+    return <Object?>[
+      width,
+      height,
+      bitRate,
+    ];
+  }
+
+  static VideoResolution decode(Object result) {
+    result as List<Object?>;
+    return VideoResolution(
+      width: result[0]! as int,
+      height: result[1]! as int,
+      bitRate: result[2]! as int,
+    );
+  }
+}
+
 class _AndroidVideoPlayerApiCodec extends StandardMessageCodec {
   const _AndroidVideoPlayerApiCodec();
   @override
@@ -220,8 +251,11 @@ class _AndroidVideoPlayerApiCodec extends StandardMessageCodec {
     } else if (value is TextureMessage) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
-    } else if (value is VolumeMessage) {
+    } else if (value is VideoResolution) {
       buffer.putUint8(134);
+      writeValue(buffer, value.encode());
+    } else if (value is VolumeMessage) {
+      buffer.putUint8(135);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -231,19 +265,21 @@ class _AndroidVideoPlayerApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return CreateMessage.decode(readValue(buffer)!);
-      case 129: 
+      case 129:
         return LoopingMessage.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return MixWithOthersMessage.decode(readValue(buffer)!);
-      case 131: 
+      case 131:
         return PlaybackSpeedMessage.decode(readValue(buffer)!);
-      case 132: 
+      case 132:
         return PositionMessage.decode(readValue(buffer)!);
-      case 133: 
+      case 133:
         return TextureMessage.decode(readValue(buffer)!);
-      case 134: 
+      case 134:
+        return VideoResolution.decode(readValue(buffer)!);
+      case 135:
         return VolumeMessage.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -266,7 +302,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.initialize', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -288,7 +324,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.create', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -315,7 +351,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.dispose', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -337,7 +373,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.setLooping', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -359,7 +395,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.setVolume', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -381,7 +417,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.setPlaybackSpeed', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -403,7 +439,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.play', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -425,7 +461,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.position', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -452,7 +488,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.seekTo', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -474,7 +510,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.pause', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -496,7 +532,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.setMixWithOthers', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -518,7 +554,7 @@ class AndroidVideoPlayerApi {
         'dev.flutter.pigeon.AndroidVideoPlayerApi.changeBandWidth', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -532,6 +568,33 @@ class AndroidVideoPlayerApi {
       );
     } else {
       return;
+    }
+  }
+
+  Future<List<VideoResolution?>> getVideoResolution(TextureMessage arg_msg) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.AndroidVideoPlayerApi.getVideoResolution', codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+    await channel.send(<Object?>[arg_msg]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as List<Object?>?)!.cast<VideoResolution?>();
     }
   }
 }

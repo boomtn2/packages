@@ -83,6 +83,12 @@ abstract class VideoPlayerPlatform extends PlatformInterface {
     throw UnimplementedError('changeBandWidth() has not been implemented.');
   }
 
+  /// getVideoResolution
+  Future<List<VideoResolutionModel>> getVideoResolution(int textureId) {
+    throw UnimplementedError('changeBandWidth() has not been implemented.');
+  }
+
+
   /// Sets the video position to a [Duration] from the start.
   Future<void> seekTo(int textureId, Duration position) {
     throw UnimplementedError('seekTo() has not been implemented.');
@@ -168,6 +174,7 @@ class DataSource {
   /// The package that the asset was loaded from. Only set for
   /// [DataSourceType.asset] videos.
   final String? package;
+  //
 }
 
 /// The way in which the video was originally loaded.
@@ -478,4 +485,19 @@ class VideoPlayerWebOptionsControls {
 
     return controlsList.join(' ');
   }
+}
+
+
+class VideoResolutionModel {
+  VideoResolutionModel({
+    required this.width,
+    required this.height,
+    required this.bitRate,
+  });
+
+  int width;
+
+  int height;
+
+  int bitRate;
 }

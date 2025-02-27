@@ -6,6 +6,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:export_tracks_video_stream/export_tracks_video_stream.dart';
+import 'package:export_tracks_video_stream/hls/model/video_track_resolution.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +22,8 @@ export 'package:video_player_platform_interface/video_player_platform_interface.
         VideoFormat,
         VideoPlayerOptions,
         VideoPlayerWebOptions,
-        VideoPlayerWebOptionsControls;
+        VideoPlayerWebOptionsControls,
+        VideoResolutionModel;
 
 export 'src/closed_caption_file.dart';
 
@@ -617,12 +620,19 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     await _videoPlayerPlatform.setVolume(_textureId, value.volume);
   }
 
-
   Future<void> _applyBandWidth() async {
     if (_isDisposedOrNotInitialized) {
       return;
     }
     await _videoPlayerPlatform.changeBandWidth(_textureId, value.bandwidth);
+  }
+
+  Future<List<VideoResolutionModel>> _getVideoSolution() async {
+    if (_isDisposedOrNotInitialized) {
+      return [];
+    }
+    final list = await _videoPlayerPlatform.getVideoResolution(textureId);
+    return list;
   }
 
   Future<void> _applyPlaybackSpeed() async {
@@ -678,7 +688,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     await _applyVolume();
   }
 
-
   /// Sets the audio volume of [this].
   ///
   /// [volume] indicates a value between 0.0 (silent) and 1.0 (full volume) on a
@@ -686,6 +695,33 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   Future<void> changeBandWidth(double bandwidth) async {
     value = value.copyWith(bandwidth: bandwidth);
     await _applyBandWidth();
+  }
+
+  Future<List<VideoResolutionModel>> get videoResolution async {
+    if (_isDisposed) {
+      return [];
+    }
+    if (formatHint == VideoFormat.hls || formatHint == VideoFormat.dash) {
+      return _getVideoResolutionHls();
+    } else {
+      return _getVideoSolution();
+    }
+  }
+
+  HlsController? controlerHls;
+
+  Future<List<VideoResolutionModel>> _getVideoResolutionHls() async {
+    controlerHls ??= HlsController();
+    final List<VideoResolutionModel> resolutions = <VideoResolutionModel>[];
+    final List<VideoTrackResolution>? tracks = await controlerHls?.getTracks(dataSource);
+    tracks?.forEach((VideoTrackResolution element) {
+      resolutions.add(VideoResolutionModel(
+          width: element.width ?? 0,
+          height: element.height ?? 0,
+          bitRate: element.bitRate ?? 0));
+    });
+
+    return resolutions;
   }
 
   /// Sets the playback speed of [this].
@@ -901,6 +937,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
 class _VideoPlayerWithRotation extends StatelessWidget {
   const _VideoPlayerWithRotation({required this.rotation, required this.child});
+
   final int rotation;
   final Widget child;
 

@@ -19,8 +19,16 @@ import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.flutter.view.TextureRegistry;
+import androidx.media3.common.Tracks;
+import androidx.media3.common.Format;
+import androidx.media3.common.MimeTypes;
+import android.util.Log;
 
 @UnstableApi
 final class VideoPlayer {
@@ -104,7 +112,37 @@ final class VideoPlayer {
                     .setForceHighestSupportedBitrate(true);
             trackSelector.setParameters(params);
         }
+        System.out.println("Xin chào, thế giới 2!"+value);
+    }
 
+    List<Map<String, Object>> getVideoResolution() {
+        Tracks currentTracks = exoPlayer.getCurrentTracks();
+        List<Map<String, Object>> videoResolutions = new ArrayList<>();
+
+        if (currentTracks != null) {
+            for (Tracks.Group group : currentTracks.getGroups()) {
+                for (int i = 0; i < group.length; i++) {
+                    Format format = group.getTrackFormat(i);
+                    if (MimeTypes.isVideo(format.sampleMimeType)) {
+                        int width = (format.width != Format.NO_VALUE) ? format.width : 0;
+                        int height = (format.height != Format.NO_VALUE) ? format.height : 0;
+                        int bitrate = (format.bitrate != Format.NO_VALUE) ? format.bitrate : 0;
+
+                        Map<String, Object> resolutionMap = new HashMap<>();
+                        resolutionMap.put("width", width);
+                        resolutionMap.put("height", height);
+                        resolutionMap.put("bitrate", bitrate);
+
+                        videoResolutions.add(resolutionMap);
+
+                        Log.d("VideoResolution", "Độ phân giải video: " + width + "x" + height + ", bitrate: " + bitrate + "bps" + "TrackSelected: "+group.isTrackSelected(i));
+                    }
+                }
+            }
+        }
+
+
+        return videoResolutions;
     }
 
     void setPlaybackSpeed(double value) {

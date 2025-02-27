@@ -7,8 +7,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
-
 import 'messages.g.dart';
+
 
 /// An Android implementation of [VideoPlayerPlatform] that uses the
 /// Pigeon-generated [VideoPlayerApi].
@@ -89,7 +89,7 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
     ));
   }
 
-   @override
+  @override
   Future<void> changeBandWidth(int textureId, double bandwidth) {
     return _api.changeBandWidth(VolumeMessage(
       textureId: textureId,
@@ -192,5 +192,21 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
       Duration(milliseconds: pair[0] as int),
       Duration(milliseconds: pair[1] as int),
     );
+  }
+
+  @override
+  Future<List<VideoResolutionModel>> getVideoResolution(int textureId) async {
+    final List<VideoResolutionModel> listResolution = [];
+    final List<VideoResolution?> list =
+        await _api.getVideoResolution(TextureMessage(textureId: textureId));
+    for (var element in list) {
+      if (element != null) {
+        listResolution.add(VideoResolutionModel(
+            width: element.width,
+            bitRate: element.bitRate,
+            height: element.height));
+      }
+    }
+    return listResolution;
   }
 }
