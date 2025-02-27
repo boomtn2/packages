@@ -28,7 +28,7 @@ dependencies:
     git:
       url: https://github.com/boomtn2/packages.git
       path: packages/video_player/video_player_platform_interface/
-      ref: a166df7da345191207a7daeb3ada51a87eb9bb70
+      ref: 2dc1f494628f35e5b5baa706a191f5f8bc502e0a
 
 dev_dependencies:
   flutter_test:
